@@ -16,7 +16,7 @@ export class chatService {
     });
   }
 
-  connect(onMessage: (message: IChatMessage) => void) {
+  connect(onMessage: (message: IChatMessage) => void, onConnectCallback?: () => void) {
     this.client.onConnect = () => {
       this.client.subscribe('/queue/messages', (message: Message) => {
         const allMessages = JSON.parse(message.body);
@@ -26,6 +26,10 @@ export class chatService {
         const receivedMessage = JSON.parse(message.body);
         onMessage(receivedMessage);
       });
+
+      if (onConnectCallback) {
+        onConnectCallback();
+      }
     };
     this.client.activate();
   }
@@ -53,7 +57,13 @@ export class chatService {
   }
 
   addUser(username: string) {
-    const chatMessage = { sender: username, type: 'JOIN' };
+    const chatMessage = {
+      id: 0,
+      content: '',
+      sender: username,
+      type: 'JOIN',
+      createdAt: new Date(),
+    };
     try {
       this.client.publish({
         destination: `${environments.WS.chatAddUser}`,

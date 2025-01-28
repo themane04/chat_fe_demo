@@ -7,11 +7,8 @@
            'message-join': message.type === 'JOIN',
            'message-leave': message.type === 'LEAVE'
          }">
-      <span class="message-sender"
-            *ngIf="message.type !== 'JOIN' && message.type !== 'LEAVE'">{{ message.sender }}</span>
-      <p
-        [class]="message.type === 'JOIN' || message.type === 'LEAVE' ? 'short-message-content' : 'message-content'"
-      >
+      <span class="message-sender"  *ngIf="message.type !== 'JOIN' && message.type !== 'LEAVE'">{{ message.sender }}</span>
+      <p [class]="message.type === 'JOIN' || message.type === 'LEAVE' ? 'short-message-content' : 'message-content'">
         {{ message.content }}
       </p>
       <small class="message-timestamp">{{ message.createdAt | date:'shortTime' }}</small>

@@ -42,17 +42,28 @@ export class HomepageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.chatService.connect((messages: IChatMessage[] | IChatMessage) => {
-      if (Array.isArray(messages)) {
-        this.messages = messages.map(message => ({
-          ...message,
-          createdAt: new Date(message.createdAt)
-        }));
-      } else {
-        this.messages = [...this.messages, messages]
+    this.chatService.connect(
+      (messages: IChatMessage[] | IChatMessage) => {
+        if (Array.isArray(messages)) {
+          this.messages = messages.map(message => ({
+            ...message,
+            createdAt: new Date(message.createdAt),
+            content: message.type === 'JOIN' && !message.content
+              ? `${message.sender} joined the chat`
+              : message.content
+          }));
+        } else {
+          if (messages.type === 'JOIN' && !messages.content) {
+            messages.content = `${messages.sender} joined the chat`;
+          }
+          this.messages = [...this.messages, messages];
+        }
+        this.scrollToBottom();
+      },
+      () => {
+        this.chatService.addUser(this.username);
       }
-      this.scrollToBottom();
-    });
+    );
   }
 
   sendMessage() {
@@ -65,7 +76,6 @@ export class HomepageComponent implements OnInit {
         createdAt: new Date(),
         replyToMessageId: 0
       };
-      this.messages = [...this.messages, newMessage];
       this.cdr.detectChanges();
       this.chatService.sendMessage(this.messageContent, this.username);
       this.messageContent = '';
