@@ -24,7 +24,7 @@ To get this project up and running on your local machine, follow these steps:
 1. Ensure you have Node.js and Angular CLI installed.
 2. Clone the repository
 ```
-git clone git@github.com:themane04/chat_fe.git
+git clone https://github.com/themane04/chat_fe_demo.git
 ```
 3. Navigate into the project directory
 ```
