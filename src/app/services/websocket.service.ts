@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Client, Message} from '@stomp/stompjs';
 import {IChatMessage} from '../models/message.model';
-import {HttpClient} from '@angular/common/http';
 import {environments} from '../environments/environments';
 
 @Injectable({
@@ -10,7 +9,7 @@ import {environments} from '../environments/environments';
 export class chatService {
   client: Client;
 
-  constructor(private http: HttpClient) {
+  constructor() {
     this.client = new Client({
       webSocketFactory: () => new WebSocket(`${environments.BACKEND_WS_URL}`),
     });
@@ -32,13 +31,6 @@ export class chatService {
       }
     };
     this.client.activate();
-  }
-
-  getMessages() {
-    this.client.publish({
-      destination: `${environments.WS.getMessages}`,
-      body: ''
-    })
   }
 
   sendMessage(content: string, sender: string) {

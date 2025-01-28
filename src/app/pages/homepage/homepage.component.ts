@@ -48,9 +48,12 @@ export class HomepageComponent implements OnInit {
           this.messages = messages.map(message => ({
             ...message,
             createdAt: new Date(message.createdAt),
-            content: message.type === 'JOIN' && !message.content
-              ? `${message.sender} joined the chat`
-              : message.content
+            content:
+              message.type === 'JOIN' && !message.content
+                ? `${message.sender} joined the chat`
+                : message.type === 'LEAVE' && !message.content
+                  ? `${message.sender} left the chat`
+                  : message.content
           }));
         } else {
           if (messages.type === 'JOIN' && !messages.content) {
@@ -68,14 +71,6 @@ export class HomepageComponent implements OnInit {
 
   sendMessage() {
     if (this.messageContent.trim()) {
-      const newMessage: IChatMessage = {
-        id: this.messages.length + 1,
-        content: this.messageContent,
-        sender: this.username,
-        type: 'CHAT',
-        createdAt: new Date(),
-        replyToMessageId: 0
-      };
       this.cdr.detectChanges();
       this.chatService.sendMessage(this.messageContent, this.username);
       this.messageContent = '';
